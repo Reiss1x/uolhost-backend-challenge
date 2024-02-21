@@ -14,10 +14,8 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique=true)
     private String email;
     private String name;
-    @Column(unique=true)
     private String telephone;
     private String codename;
     @Enumerated(EnumType.STRING)

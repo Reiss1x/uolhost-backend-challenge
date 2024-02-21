@@ -2,11 +2,10 @@ package com.uolhost.uolhostbackendchallenge.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uolhost.uolhostbackendchallenge.domain.Team;
 import com.uolhost.uolhostbackendchallenge.domain.Player;
+import com.uolhost.uolhostbackendchallenge.dtos.PlayerDTO;
 import com.uolhost.uolhostbackendchallenge.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -15,44 +14,51 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PlayerService {
 
-    private String vingadores = "https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/vingadores.json";
 
     @Autowired
     private PlayerRepository repo;
 
-    public void validatePlayer(/*Player player*/) throws Exception {
-        List<Map<String, String>> avengers = fetchCodenames();
-        for (Map<String, String> v : avengers){
-            System.out.println(v.get("codinome"));
-        }
+    @Autowired
+    private FilesService fs;
 
-        /*List<Player> list = repo.findAll();
-        if(player.getTeam() == Team.VINGADORES){
-            for (Player p : list){
-                if
+    public List<Player> getPlayers(){
+        return repo.findAll();
+    }
+
+    public Player validatePlayer(PlayerDTO player) throws Exception {
+        List<String> avengers = fs.fetchAvengers();
+
+        List<Player> players = repo.findAll();
+        List<Player> team = players.stream()
+                .filter(obj -> obj.getTeam().equals(player.team())).toList();
+
+        for (String code : avengers) {
+            boolean available = true;
+            for(Player p : team) {
+                if (p.getCodename().equals(code)) {
+                    available = false;
+                    break;
+                }
             }
-        }*/
+            if(available) {
+                Player newPlayer = new Player();
+                newPlayer.setEmail(player.email());
+                newPlayer.setName(player.name());
+                newPlayer.setTelephone(player.telephone());
+                newPlayer.setCodename(code);
+                newPlayer.setTeam(player.team());
+                repo.save(newPlayer);
+                return newPlayer;
+            }
+        }
+        return null;
     }
-
-    public List<Map<String, String>> fetchCodenames() throws Exception{
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(vingadores))
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        String responseBody = response.body();
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, List<Map<String, String>>> jsonData = mapper.readValue(responseBody, new TypeReference<Map<String, List<Map<String, String>>>>() {
-        });
-        return jsonData.get("vingadores");
-    }
-
-
 }
