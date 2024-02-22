@@ -27,8 +27,8 @@ public class PlayerService {
 
     public Player validatePlayer(PlayerDTO player) throws Exception {
         List<String> squad;
-
-        if(player.team().equals(Team.VINGADORES)){
+        Team side =  Team.valueOf(player.team());
+        if(side.equals(Team.VINGADORES)){
             squad = fs.fetchAvengers();
         } else {
             squad = fs.fetchLeague();
@@ -36,7 +36,7 @@ public class PlayerService {
 
         List<Player> players = repo.findAll();
         List<Player> team = players.stream()
-                .filter(obj -> obj.getTeam().equals(player.team())).toList();
+                .filter(obj -> obj.getTeam().equals(side)).toList();
 
         for (String code : squad) {
             boolean available = true;
@@ -52,7 +52,7 @@ public class PlayerService {
                 newPlayer.setName(player.name());
                 newPlayer.setTelephone(player.telephone());
                 newPlayer.setCodename(code);
-                newPlayer.setTeam(player.team());
+                newPlayer.setTeam(side);
                 repo.save(newPlayer);
                 return newPlayer;
             }

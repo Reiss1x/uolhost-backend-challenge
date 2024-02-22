@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>uolHost</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 20%;
+            padding: 5px 10px;
+            border: 2px solid black;
+        }
+        .inputs {
+            width: 95%;
+        }
+        h2 {
+            padding: 0 0 10px;
+            margin: 0;
+        }
+        .box-inputs {
+            width: 100%;
+        }
+        .radio {
+            display: flex;
+            flex-direction: column;
+        }
+        .btns {
+            text-align: center;
+            padding: 10px;
+
+        }
+
+        .btn {
+            width: 40%;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 10px;
+            background-color: #7f7f7f;
+            color: #ffffff;
+        }
+        .btn:hover {
+            background-color: #525252;
+        }
+        li {
+            margin: 0 0 0 30px;
+            border: 2px solid grey;
+            padding: 10px;
+            display: flex;
+            font-weight: lighter;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2>Cadastro do jogador UOL</h2>
+    <form id="formulario">
+        <div class="inputs">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" class="box-inputs"><br><br>
+
+            <label for="email">E-mail:</label>
+            <input type="text" id="email" name="email" class="box-inputs"><br><br>
+
+            <label for="telephone">Telefone:</label>
+            <input type="text" id="telephone" name="telephone" class="box-inputs"><br><br>
+        </div>
+        <div class="radio">
+            Quero ser do grupo:
+            <label for="LIGA" style="font-weight: lighter"><input type="radio" id="LIGA" name="radio" value="LIGA"> Liga da Justiça </label>
+            <label for="VINGADORES" style="font-weight: lighter"><input type="radio" id="VINGADORES" name="radio" value="VINGADORES"> Vingadores  </label>
+        </div>
+        <div class="btns">
+            <button type="button" class="btn" onclick="sendData()">Enviar</button>
+             <button type="button" class="btn" onclick="getData()">Listar</button>
+        </div>
+    </form>
+</div>
+
+
+<div id="player-list">
+</div>
+<script>
+    function sendData() {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const telephone = document.getElementById("telephone").value;
+        const team = document.querySelector('input[name="radio"]:checked').value;
+
+
+        const data = {
+            name: name,
+            email: email,
+            telephone: telephone,
+            team: team
+        };
+
+        console.log(data)
+
+        fetch('/players', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Resposta recebida:', data);
+            })
+            .catch(error => {
+                console.error('Erro ao enviar requisição:', error);
+            });
+    }
+    function getData() {
+
+        fetch("/players")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao obter os dados');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const players = document.getElementById("player-list");
+                players.innerHTML = "";
+                data.forEach(p => {
+                    const item = document.createElement("li");
+                    item.textContent = `Nome: ${p.name}, Email: ${p.email}, Telefone: ${p.telephone}, Codinome: ${p.codename}, Equipe: ${p.team}`
+                    players.appendChild(item)
+                })
+            })
+            .catch(error => {
+                console.error('Erro:', error.message);
+            });
+    }
+</script>
+
+</body>
+</html>
