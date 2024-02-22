@@ -1,4 +1,4 @@
-package com.uolhost.uolhostbackendchallenge.Service;
+package com.uolhost.uolhostbackendchallenge.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,12 +6,9 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -56,7 +53,7 @@ public class FilesService {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(liga);
 
-            NodeList codenameList = document.getElementsByTagName("codename");
+            NodeList codenameList = document.getElementsByTagName("codinome");
 
             for (int i = 0; i < codenameList.getLength(); i++) {
                 Element element = (Element) codenameList.item(i);
