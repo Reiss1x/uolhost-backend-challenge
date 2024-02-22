@@ -1,23 +1,15 @@
-package com.uolhost.uolhostbackendchallenge.Service;
+package com.uolhost.uolhostbackendchallenge.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.uolhost.uolhostbackendchallenge.domain.Player;
+import com.uolhost.uolhostbackendchallenge.domain.Team;
 import com.uolhost.uolhostbackendchallenge.dtos.PlayerDTO;
 import com.uolhost.uolhostbackendchallenge.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class PlayerService {
@@ -34,13 +26,19 @@ public class PlayerService {
     }
 
     public Player validatePlayer(PlayerDTO player) throws Exception {
-        List<String> avengers = fs.fetchAvengers();
+        List<String> squad;
+
+        if(player.team().equals(Team.VINGADORES)){
+            squad = fs.fetchAvengers();
+        } else {
+            squad = fs.fetchLeague();
+        }
 
         List<Player> players = repo.findAll();
         List<Player> team = players.stream()
                 .filter(obj -> obj.getTeam().equals(player.team())).toList();
 
-        for (String code : avengers) {
+        for (String code : squad) {
             boolean available = true;
             for(Player p : team) {
                 if (p.getCodename().equals(code)) {
