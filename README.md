@@ -22,7 +22,7 @@ Build a Java application capable of retrieving information from an XML file and 
 The application layout was based on the provided design, Fidelity to the proposed layout was maintained.
 
 ### Built with:
-- Java, SpringBoot, JPA, Hibernate.
+- Java, SpringBoot, JPA, Hibernate, H2 Database.
 
 ## How to run:
 
@@ -36,4 +36,4 @@ Open `http://localhost:8080` to view it in the browser.
 
 ### What i learned:
 
-Learned about pure HTML manipulation, fetching different files in Java using libraries, reviwed concepts of Java Persistance API and Hibernate and created an API using Lombok for the first time.
+Learned about pure HTML manipulation, fetching different files in Java using libraries, reviwed concepts of Java Persistance API, Hibernate and H2 Database and created an API using Lombok for the first time.
