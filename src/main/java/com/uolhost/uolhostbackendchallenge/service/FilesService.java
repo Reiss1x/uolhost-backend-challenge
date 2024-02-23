@@ -18,50 +18,40 @@ import java.util.List;
 import java.util.Map;
 @Service
 public class FilesService {
-    private String vingadores = "https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/vingadores.json";
-    private String liga = "https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/liga_da_justica.xml";
 
-    public List<String> fetchAvengers() {
+    public List<String> fetchAvengers() throws Exception {
         List<String> codenames = new ArrayList<>();
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(vingadores))
-                    .GET()
-                    .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            String responseBody = response.body();
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, List<Map<String, String>>> jsonData = mapper.readValue(responseBody, new TypeReference<Map<String, List<Map<String, String>>>>() {
-            });
-            List<Map<String, String>> avengers = jsonData.get("vingadores");
 
-            for (Map<String, String> map : avengers) {
-                codenames.addAll(map.values());
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+        String vingadores = "https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/vingadores.json";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(vingadores))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String responseBody = response.body();
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, List<Map<String, String>>> jsonData = mapper.readValue(responseBody, new TypeReference<Map<String, List<Map<String, String>>>>() {
+        });
+        List<Map<String, String>> avengers = jsonData.get("vingadores");
+        for (Map<String, String> map : avengers) {
+            codenames.addAll(map.values());
         }
         return codenames;
     }
 
-    public List<String> fetchLeague() {
+    public List<String> fetchLeague() throws Exception {
+        String liga = "https://raw.githubusercontent.com/uolhost/test-backEnd-Java/master/referencias/liga_da_justica.xml";
         List<String> codenames = new ArrayList<>();
 
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(liga);
-
-            NodeList codenameList = document.getElementsByTagName("codinome");
-
-            for (int i = 0; i < codenameList.getLength(); i++) {
-                Element element = (Element) codenameList.item(i);
-                String codename = element.getTextContent();
-                codenames.add(codename);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(liga);
+        NodeList codenameList = document.getElementsByTagName("codinome");
+        for (int i = 0; i < codenameList.getLength(); i++) {
+            Element element = (Element) codenameList.item(i);
+            String codename = element.getTextContent();
+            codenames.add(codename);
         }
         return codenames;
     }

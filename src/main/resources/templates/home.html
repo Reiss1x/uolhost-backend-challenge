@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <title>uolHost</title>
     <style>
@@ -8,13 +8,19 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
+            width: 100%;
         }
         .container {
             display: flex;
             flex-direction: column;
+            box-sizing: border-box;
             width: 20%;
+            max-height: 400px;
             padding: 5px 10px;
             border: 2px solid black;
+        }
+        .player-list {
+            margin-left: 10px;
         }
         .inputs {
             width: 95%;
@@ -35,6 +41,11 @@
             padding: 10px;
 
         }
+        .message {
+            font-size: 10px;
+            text-align: center;
+            color: green;
+        }
 
         .btn {
             width: 40%;
@@ -48,45 +59,57 @@
             background-color: #525252;
         }
         li {
-            margin: 0 0 0 30px;
             border: 2px solid grey;
             padding: 10px;
             display: flex;
             font-weight: lighter;
+            width: 100%;
+        }
+        .page{
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
 
     </style>
 </head>
 
 <body>
-<div class="container">
-    <h2>Cadastro do jogador UOL</h2>
-    <form id="formulario">
-        <div class="inputs">
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" class="box-inputs"><br><br>
+<div class="page">
+    <div class="container">
+        <h2>Cadastro do jogador UOL</h2>
+        <form id="formulario">
+            <div class="inputs">
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" class="box-inputs"><br><br>
+                <label for="email">E-mail:</label>
+                <input type="text" id="email" name="email" class="box-inputs"><br><br>
+                <label for="telephone">Telefone:</label>
+                <input type="text" id="telephone" name="telephone" class="box-inputs"><br><br>
+            </div>
+            <div class="radio">
+                Quero ser do grupo:
+                <label for="LIGA" style="font-weight: lighter"><input type="radio" id="LIGA" name="radio" value="LIGA"> Liga da Justiça </label>
+                <label for="VINGADORES" style="font-weight: lighter"><input type="radio" id="VINGADORES" name="radio" value="VINGADORES"> Vingadores  </label>
+            </div>
+            <div class="btns">
+                <button type="button" class="btn" onclick="sendData()">Enviar</button>
+                <button type="button" class="btn" onclick="getData()">Listar</button>
+            </div>
+        </form>
+        <div id="message" class="message">
+        </div>
+    </div>
 
-            <label for="email">E-mail:</label>
-            <input type="text" id="email" name="email" class="box-inputs"><br><br>
+    <div id="player-list" class="player-list">
+    </div>
 
-            <label for="telephone">Telefone:</label>
-            <input type="text" id="telephone" name="telephone" class="box-inputs"><br><br>
-        </div>
-        <div class="radio">
-            Quero ser do grupo:
-            <label for="LIGA" style="font-weight: lighter"><input type="radio" id="LIGA" name="radio" value="LIGA"> Liga da Justiça </label>
-            <label for="VINGADORES" style="font-weight: lighter"><input type="radio" id="VINGADORES" name="radio" value="VINGADORES"> Vingadores  </label>
-        </div>
-        <div class="btns">
-            <button type="button" class="btn" onclick="sendData()">Enviar</button>
-             <button type="button" class="btn" onclick="getData()">Listar</button>
-        </div>
-    </form>
+
 </div>
 
 
-<div id="player-list">
-</div>
+
+
 <script>
     function sendData() {
         const name = document.getElementById("name").value;
@@ -102,8 +125,6 @@
             team: team
         };
 
-        console.log(data)
-
         fetch('/players', {
             method: 'POST',
             headers: {
@@ -113,9 +134,20 @@
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Resposta recebida:', data);
+                const message = document.getElementById("message");
+                message.innerHTML = "";
+                const item = document.createElement("h1");
+                item.textContent = `Jogador ${data.name} criado com sucesso!`
+                message.appendChild(item);message.appendChild(item);
+                message.style.color = "green";
             })
             .catch(error => {
+                const message = document.getElementById("message");
+                message.innerHTML = "";
+                const item = document.createElement("h1");
+                item.textContent = `A lista ${data.team} não possui mais usuários disponíveis.`
+                message.appendChild(item);
+                message.style.color = "red";
                 console.error('Erro ao enviar requisição:', error);
             });
     }
@@ -137,7 +169,7 @@
                     players.appendChild(item)
                 })
             })
-            .catch(error => {
+            .catch(error => { 
                 console.error('Erro:', error.message);
             });
     }
