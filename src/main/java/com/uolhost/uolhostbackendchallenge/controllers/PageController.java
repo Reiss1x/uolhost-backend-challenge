@@ -16,7 +16,7 @@ public class PageController {
     @Autowired
     private PlayerService ps;
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public ModelAndView home(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home.html");
