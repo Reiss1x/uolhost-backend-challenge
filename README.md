@@ -30,7 +30,7 @@ The application layout was based on the provided design, Fidelity to the propose
 
 `mvn clean install`  - will install all dependencies needed to run the project.
 
-`mvn spring-boot: eun` - runs the app in the development mode.
+`mvn spring-boot: run` - runs the app in the development mode.
 
 Open `http://localhost:8080` to view it in the browser.
 
